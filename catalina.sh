@@ -140,6 +140,8 @@ PRGDIR=`dirname "$PRG"`
 # Copy CATALINA_BASE from CATALINA_HOME if not already set
 [ -z "$CATALINA_BASE" ] && CATALINA_BASE="$CATALINA_HOME"
 
+# -r 文件存在并且可读
+
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in setenv.sh, in rare case when it is needed.
 CLASSPATH=
@@ -149,6 +151,8 @@ if [ -r "$CATALINA_BASE/bin/setenv.sh" ]; then
 elif [ -r "$CATALINA_HOME/bin/setenv.sh" ]; then
   . "$CATALINA_HOME/bin/setenv.sh"
 fi
+
+# -n 当串的长度大于0时为真(串非空)
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
 if $cygwin; then
@@ -268,6 +272,8 @@ if [ -z "$LOGGING_MANAGER" ]; then
   LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
 fi
 
+# umask设置文件创建时的缺省值,文件属主、同组用户、其他用户,0027:文件：640,目录750
+
 # Set UMASK unless it has been overridden
 if [ -z "$UMASK" ]; then
     UMASK="0027"
@@ -285,6 +291,10 @@ if [ -z "$USE_NOHUP" ]; then
         USE_NOHUP="false"
     fi
 fi
+
+
+# unset 删除变量_NOHUP
+
 unset _NOHUP
 if [ "$USE_NOHUP" = "true" ]; then
     _NOHUP=nohup
@@ -454,8 +464,22 @@ elif [ "$1" = "start" ] ; then
   else
 
   # 这里3
+  # >> ；如果文件不存在，将创建新的文件，并将数据送至此文件；如果文件存在，则将数据添加在文件后面
+  # >  ；如果文件不存在，同上，如果文件存在，先将文件清空，然后将数据填入此文件
   # 调用main方法时，传一个字符串start
   # org.apache.catalina.startup.Bootstrap start
+  # _NOHUP nohup
+  # _RUNJAVA="D:\java\jdk\bin\java"
+  # LOGGING_CONFIG="-Djava.util.logging.config.file=D:/java/tomcat/conf/logging.properties"
+  # LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+  # JAVA_OPTS="-Djdk.tls.ephemeralDHKeySize=2048 -Dorg.apache.catalina.security.SecurityListener.UMASK=0027"
+  # CATALINA_OPTS=""
+  # CLASSPATH="D:/java/tomcat/bin/bootstrap.jar:$CATALINA_BASE/bin/tomcat-juli.jar"
+  # CATALINA_BASE="D:/java/tomcat"
+  # CATALINA_HOME="D:/java/tomcat"
+  # CATALINA_TMPDIR="D:/java/tomcat/temp"
+  # CATALINA_OUT="D:/java/tomcat/logs"
+  # nohup D:\java\jdk\bin\java 参数 org.apache.catalina.startup.Bootstrap start >> D:/java/tomcat/logs 2>&1 &
 
     eval $_NOHUP "\"$_RUNJAVA\"" "\"$LOGGING_CONFIG\"" $LOGGING_MANAGER $JAVA_OPTS $CATALINA_OPTS \
       -classpath "\"$CLASSPATH\"" \
