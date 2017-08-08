@@ -1,0 +1,20 @@
+Bootstrap
+
+static代码块：
+设置catalina.home为D:\java\tomcat
+设置catalina.base为D:\java\tomcat
+
+initClassLoaders
+createClassLoader
+获取配置文件：D:\java\tomcat\conf\catalina.properties
+
+common.loader="${catalina.base}/lib","${catalina.base}/lib/*.jar","${catalina.home}/lib","${catalina.home}/lib/*.jar"
+创建commonLoader，父classloader为null
+catalinaLoader，sharedLoader和commonLoader一致
+
+catalinaDaemon为Catalina的实例，setParentClassLoader为sharedLoader也就是commonLoader
+catalinaDaemon设置setAwait为true
+
+Bootstrap.main
+	Catalina.load
+	Catalina.start
